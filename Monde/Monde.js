@@ -62,7 +62,7 @@ export default class Monde {
         }
 
         //INIT TEST ENTITY
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 10; i++) {
             this.allEntities.push(new Entity(two, this.alwaysOnTopGroup, this,
                 Math.round(Math.random() * (taillex - 1)),
                 Math.round(Math.random() * (tailley - 1)),
@@ -75,7 +75,7 @@ export default class Monde {
         this.SetupAllChunks();
 
         //DEBUG
-        this.renderChunks = false
+        this.renderChunks = true
         if (this.renderChunks) {
             for (let x = 0; x < taillex / tailleChunks; x++) {
                 for (let y = 0; y < tailley / tailleChunks; y++) {
@@ -101,18 +101,18 @@ export default class Monde {
         }
 
         this.UpdateRenderDistance(this.player.posChunk, { x: 0, y: 0 })
+
+        console.log(this.allChunks)
+        console.log("FIN CONSTRUCTEUR MONDE")
     }
 
     Update() {
         this.player.Update()
         this.LoadUnloadChunks()
+
     }
 
     Render() {
-        for (let chunk in this.renderedChunks) {
-            this.renderedChunks[chunk].Render()
-        }
-
         this.allEntities.forEach(entity => {
             entity.Update()
             entity.Render()

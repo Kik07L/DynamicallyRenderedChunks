@@ -34,7 +34,7 @@ window.addEventListener('keyup', function (event) {
 var elem = document.body;
 var two = new Two(params).appendTo(elem);
 
-export var mondeActif = new Monde(two, 30, 30, 50, 4);
+export var mondeActif = new Monde(two, 30, 30, 50, 6);
 
 var coucou = two.makeCircle(50, 50, 10)
 coucou.fill = "black"
@@ -42,9 +42,10 @@ coucou.fill = "black"
 two.bind('update', update);
 two.play();
 
+
 function update(frameCount) {
     Millis.Update();
-
+    
     coucou.position.set(mousePos.x, mousePos.y)
 
     mondeActif.Update()

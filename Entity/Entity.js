@@ -33,8 +33,26 @@ export default class Entity {
     }
 
     Deplacement(x = 0, y = 0) {
+
+        console.log(this.monde.renderedChunks)
+
+        
+
+        for (let i in this.monde.renderedChunks) {
+            for (let j in this.monde.renderedChunks[i].entities) {
+                let ent = this.monde.renderedChunks[i].entities[j]
+                
+                if (ent.pos.x == this.pos.x + x && ent.pos.y == this.pos.y + y) {
+                    console.log("collision", ent.pos)
+                    return false
+                }
+            }
+        }
+
         this.pos.x += x;
-        this.pos.y += y
+        this.pos.y += y;
+        return true
+
     }
 
     UnloadDisplay() {

@@ -47,14 +47,18 @@ export default class Player extends Entity {
     }
 
     Deplacement(x = 0, y = 0) {
-        super.Deplacement(x, y)
-        const temp = { ...this.posChunk }
-        this.UpdatePosChunk()
+        if (super.Deplacement(x, y)) {
+            const temp = { ...this.posChunk }
+            this.UpdatePosChunk()
 
-        if (temp.x != this.posChunk.x || temp.y != this.posChunk.y) {
-            //console.log("changement de chunk :", this.posChunk)
-            this.monde.UpdateRenderDistance(this.posChunk, { x: this.posChunk.x - temp.x, y: this.posChunk.y - temp.y })
+            if (temp.x != this.posChunk.x || temp.y != this.posChunk.y) {
+                //console.log("changement de chunk :", this.posChunk)
+                this.monde.UpdateRenderDistance(this.posChunk, { x: this.posChunk.x - temp.x, y: this.posChunk.y - temp.y })
+            }
+
+            return true
         }
+        return false
     }
 
     UpdatePosChunk() {
