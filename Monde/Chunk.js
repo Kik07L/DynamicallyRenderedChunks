@@ -43,6 +43,10 @@ export default class Chunk {
                 this.displayGroup.remove(this.cases[x][y].display)
             }
         }
+        
+        for (let i in this.entities) {
+            this.entities[i].UnloadDisplay()
+        }
     }
 
     LoadDisplays() {
@@ -52,6 +56,10 @@ export default class Chunk {
             for (let y = 0; y < this.taille; y++) {
                 this.displayGroup.add(this.cases[x][y].display)
             }
+        }
+
+        for (let i in this.entities) {
+            this.entities[i].LoadDisplay()
         }
     }
     AddCase(cas, x, y) {

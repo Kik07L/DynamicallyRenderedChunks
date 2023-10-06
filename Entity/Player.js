@@ -3,8 +3,8 @@ import Entity from "./Entity.js"
 
 export default class Player extends Entity {
 
-    constructor(two, monde, posx, posy) {
-        super(two, monde, posx, posy)
+    constructor(two, displayGroup, monde, posx, posy) {
+        super(two, displayGroup, monde, posx, posy)
 
         this.renderDistance = 1
         this.display.fill = "red"

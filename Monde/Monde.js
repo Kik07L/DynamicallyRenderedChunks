@@ -18,6 +18,7 @@ export default class Monde {
         this.renderedChunks = []
 
         this.displayGroup = two.makeGroup()
+        this.alwaysOnTopGroup = two.makeGroup()
 
         this.allEntities = []
         this.allCases = [] //[][]
@@ -62,25 +63,27 @@ export default class Monde {
 
         //INIT TEST ENTITY
         for (let i = 0; i < 5; i++) {
-            this.allEntities.push(new Entity(two, this,
+            this.allEntities.push(new Entity(two, this.alwaysOnTopGroup, this,
                 Math.round(Math.random() * (taillex - 1)),
-                Math.round(Math.random() * (tailley - 1))
+                Math.round(Math.random() * (tailley - 1)),
             ))
         }
 
         //INIT PLAYER
-        this.player = new this.entityTypes["Player"](two, this, 5, 5)
+        this.player = new this.entityTypes["Player"](two, this.alwaysOnTopGroup, this, 5, 5)
 
         this.SetupAllChunks();
 
         //DEBUG
-        this.renderChunks = true
-        for (let x = 0; x < taillex / tailleChunks; x++) {
-            for (let y = 0; y < tailley / tailleChunks; y++) {
-                let rect = two.makeRectangle(x * tailleCase * tailleChunks + tailleCase * tailleChunks / 2, y * tailleCase * tailleChunks + tailleCase * tailleChunks / 2,
-                    tailleCase * tailleChunks, tailleCase * tailleChunks)
-                rect.fill = "transparent"
-                rect.stroke = "red"
+        this.renderChunks = false
+        if (this.renderChunks) {
+            for (let x = 0; x < taillex / tailleChunks; x++) {
+                for (let y = 0; y < tailley / tailleChunks; y++) {
+                    let rect = two.makeRectangle(x * tailleCase * tailleChunks + tailleCase * tailleChunks / 2, y * tailleCase * tailleChunks + tailleCase * tailleChunks / 2,
+                        tailleCase * tailleChunks, tailleCase * tailleChunks)
+                    rect.fill = "transparent"
+                    rect.stroke = "red"
+                }
             }
         }
 

@@ -34,7 +34,7 @@ window.addEventListener('keyup', function (event) {
 var elem = document.body;
 var two = new Two(params).appendTo(elem);
 
-export var mondeActif = new Monde(two, 50, 50, 20, 8);
+export var mondeActif = new Monde(two, 30, 30, 50, 4);
 
 var coucou = two.makeCircle(50, 50, 10)
 coucou.fill = "black"
