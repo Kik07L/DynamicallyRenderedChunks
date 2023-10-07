@@ -12,19 +12,21 @@ export default class Monde {
         console.log("refactored :", tx + "/" + ty, "in", taillex + "/" + tailley + " (multiple de this.tailleChunks)")
 
         this.staticCamera = false;
+        this.staticCameraPosChunk = { x: 0, y: 0 }
+        this.staticCameraPos = { x: 0, y: 0 }
+
+        this.renderingSpeed = 2
 
         this.taillex = taillex;
         this.tailley = tailley;
         this.tailleCase = tailleCase;
         this.tailleChunks = tailleChunks
-        this.renderedChunks = []
 
         this.displayGroup = two.makeGroup()
         this.alwaysOnTopGroup = two.makeGroup()
 
         this.allEntities = []
         this.allCases = [] //[][]
-        this.casesDisplays = []
 
 
         this.pileChunkRender = [];
@@ -48,7 +50,7 @@ export default class Monde {
             this.allChunks.push(col)
         }
 
-        console.log("Init chunks : "+timer.PinString())
+        console.log("Init chunks : " + timer.PinString())
 
         //INIT ALL CASES
         let nombreCases = taillex * tailley
@@ -58,7 +60,6 @@ export default class Monde {
             for (let y = 0; y < tailley; y++) {
                 let caseIci = new Case(this, two, this.displayGroup)
                 temp.push(caseIci)
-                this.casesDisplays.push(caseIci.display)
 
                 let chunkPos = {
                     x: Math.floor(x / this.tailleChunks),
@@ -71,7 +72,7 @@ export default class Monde {
             }
             this.allCases.push(temp)
         }
-        console.log("Cases générées !! "+timer.PinString())
+        console.log("Cases générées !! " + timer.PinString())
 
 
         //INIT TEST ENTITY
@@ -81,14 +82,14 @@ export default class Monde {
                 Math.round(Math.random() * (tailley - 1)),
             ))
         }
-        console.log("Test entities créées !! "+timer.PinString())
+        console.log("Test entities créées !! " + timer.PinString())
 
 
         //INIT PLAYER
         this.player = new this.entityTypes["Player"](two, this.alwaysOnTopGroup, this, 5, 5)
 
         this.SetupAllChunks();
-        console.log("Chunks setup !! "+timer.PinString())
+        console.log("Chunks setup !! " + timer.PinString())
 
         //DEBUG
         this.renderChunks = true
@@ -109,7 +110,7 @@ export default class Monde {
                 this.allChunks[x][y].Render()
             }
         }
-        console.log("Chunks prérender !! "+timer.PinString())
+        console.log("Chunks prérender !! " + timer.PinString())
 
 
         //UNLOAD ALL CHUNKS
@@ -118,7 +119,7 @@ export default class Monde {
                 this.allChunks[x][y].UnloadDisplays()
             }
         }
-        console.log("Chunks unload !! "+timer.PinString())
+        console.log("Chunks unload !! " + timer.PinString())
 
 
         this.UpdateRenderDistance(this.player.posChunk, { x: 0, y: 0 })
@@ -158,7 +159,23 @@ export default class Monde {
     Input(key, state) {
         this.player.Input(key, state)
         if (key == "c" && state == true) {
-            this.staticCamera = !this.staticCamera
+            if (!this.staticCamera) {
+                this.staticCamera = true
+                this.staticCameraPosChunk = { ...this.player.posChunk }
+                this.staticCameraPos = { ...this.player.pos }
+            } else {
+                this.staticCamera = false
+                let depl = {
+                    x: this.player.posChunk.x - this.staticCameraPosChunk.x,
+                    y: this.player.posChunk.y - this.staticCameraPosChunk.y
+                }
+
+                if (depl.x > 1 || depl.x < -1 || depl.y > 1 || depl.y < -1) {
+                    this.player.setPos(this.staticCameraPos.x, this.staticCameraPos.y)
+                } else {
+                    this.UpdateRenderDistance(this.player.posChunk, depl)
+                }
+            }
         }
     }
 
@@ -175,25 +192,29 @@ export default class Monde {
     }
 
     LoadUnloadChunks() {
-
         if (this.pileChunkRender.length > 0) {
-            //console.log(this.pileChunkRender)
+            //let timer = new Timer()
 
-            let chunk = this.pileChunkRender[0]
+            for (let i = 0; i < this.renderingSpeed; i++) {
 
-            if (chunk.load) {
-                chunk.chunk.LoadDisplays()
-                this.renderedChunks.push(chunk.chunk)
+                if (this.pileChunkRender.length > 0) {
+                    //console.log(this.pileChunkRender)
+
+                    let chunk = this.pileChunkRender[0]
+
+                    if (chunk.load) {
+                        chunk.chunk.LoadDisplays()
+                    }
+                    else {
+                        chunk.chunk.UnloadDisplays()
+                    }
+
+                    this.pileChunkRender.splice(0, 1)
+                }
             }
-            else {
-                chunk.chunk.UnloadDisplays()
-                this.renderedChunks.splice(chunk.chunk, 1)
-            }
-
-            this.pileChunkRender.splice(0, 1)
+            //timer.Pin()
         }
     }
-
     UpdateRenderDistance(posChunk, direction) {
 
         let tempUnload = this.ToUnloadChunks(posChunk, direction)
@@ -231,9 +252,14 @@ export default class Monde {
     ToUnloadChunks(posChunk, direction) {
 
         let chunks = []
+        let nbDirs = 0
 
         if (direction.x != 0) {
+            nbDirs++
+
+            //La colonne qui à renderdistance du joueur dans la direction opposée
             let posX = posChunk.x - (this.player.renderDistance * direction.x) - direction.x
+
             for (let y = -this.player.renderDistance + posChunk.y; y <= this.player.renderDistance + posChunk.y; y++) {
                 if (posX >= 0 && y >= 0 && posX < this.allChunks.length && y < this.allChunks[0].length) {
 
@@ -244,6 +270,9 @@ export default class Monde {
         }
 
         if (direction.y != 0) {
+            nbDirs++
+
+            //La ligne qui à renderdistance du joueur dans la direction opposée
             let posY = posChunk.y - (this.player.renderDistance * direction.y) - direction.y
             for (let x = -this.player.renderDistance + posChunk.x; x <= this.player.renderDistance + posChunk.x; x++) {
                 if (posY >= 0 && x >= 0 && posY < this.allChunks.length && x < this.allChunks[0].length) {
@@ -252,6 +281,15 @@ export default class Monde {
                     chunks.push({ chunk: chunk, load: false })
                 }
             }
+        }
+
+        //On a un coin qui doit être déchargé
+        if (nbDirs == 2) {
+            let posX = posChunk.x - (this.player.renderDistance * direction.x) - direction.x
+            let posY = posChunk.y - (this.player.renderDistance * direction.y) - direction.y
+
+            let chunk = this.allChunks[posX][posY]
+            chunks.push({ chunk: chunk, load: false })
         }
 
         return chunks

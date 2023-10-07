@@ -7,7 +7,7 @@ export default class Player extends Entity {
     constructor(two, displayGroup, monde, posx, posy) {
         super(two, displayGroup, monde, posx, posy)
 
-        this.renderDistance = 1
+        this.renderDistance = 2
         this.display.fill = "red"
 
         this.inputToDir = {
@@ -58,6 +58,7 @@ export default class Player extends Entity {
         if (super.Deplacement(x, y)) {
             const tempPosChunk = { ...this.posChunk }
             this.UpdatePosChunk()
+
 
             if (!this.monde.staticCamera) {
                 if (tempPosChunk.x != this.posChunk.x || tempPosChunk.y != this.posChunk.y) {

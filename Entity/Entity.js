@@ -124,4 +124,10 @@ export default class Entity {
     LoadDisplay() {
         this.displayGroup.add(this.display)
     }
+
+    setPos(x, y) {
+        this.pos.x = x;
+        this.pos.y = y;
+        this.UpdatePosChunk()
+    }
 }
