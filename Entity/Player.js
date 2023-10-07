@@ -56,18 +56,18 @@ export default class Player extends Entity {
 
     Deplacement(x = 0, y = 0) {
         if (super.Deplacement(x, y)) {
-            const temp = { ...this.posChunk }
+            const tempPosChunk = { ...this.posChunk }
             this.UpdatePosChunk()
 
-            if (temp.x != this.posChunk.x || temp.y != this.posChunk.y) {
-                //console.log("changement de chunk :", this.posChunk)
-                this.monde.UpdateRenderDistance(this.posChunk, { x: this.posChunk.x - temp.x, y: this.posChunk.y - temp.y })
+            if (!this.monde.staticCamera) {
+                if (tempPosChunk.x != this.posChunk.x || tempPosChunk.y != this.posChunk.y) {
+                    this.monde.UpdateRenderDistance(this.posChunk, { x: this.posChunk.x - tempPosChunk.x, y: this.posChunk.y - tempPosChunk.y })
+                }
             }
-
             return true
         }
         return false
     }
 
-    
+
 }

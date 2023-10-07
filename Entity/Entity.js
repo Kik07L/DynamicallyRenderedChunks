@@ -38,13 +38,13 @@ export default class Entity {
     Deplacement(x = 0, y = 0) {
 
 
+        if (!this.isLoaded(this.posChunk.x, this.posChunk.y, x, y)) return false
+
         for (let xChunk = -1; xChunk < 2; xChunk++) {
             for (let yChunk = -1; yChunk < 2; yChunk++) {
                 let xCheck = xChunk + this.posChunk.x
                 let yCheck = yChunk + this.posChunk.y
 
-                //if (!this.isLoaded(xCheck, yCheck, x, y)) return false
-                
                 if (this.isCollision(xCheck, yCheck, x, y)) return false
             }
         }
@@ -83,7 +83,6 @@ export default class Entity {
             xCheck = posChunk2.x;
             yCheck = posChunk2.y;
 
-            console.log(posChunk2)
 
             if (xCheck >= 0 && xCheck < this.monde.allChunks.length && yCheck >= 0 && yCheck < this.monde.allChunks[0].length) {
                 let chunk = this.monde.allChunks[xCheck][yCheck]
