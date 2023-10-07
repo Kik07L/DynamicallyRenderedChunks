@@ -2,6 +2,7 @@ import Case from "./Case.js";
 import Entity from "../Entity/Entity.js";
 import Player from "../Entity/Player.js";
 import Chunk from "./Chunk.js";
+import { Timer } from "../Millis.js"
 
 export default class Monde {
     constructor(two, taillex, tailley, tailleCase, tailleChunks) {
@@ -10,6 +11,7 @@ export default class Monde {
         tailley = Math.floor(tailley / tailleChunks) * tailleChunks
         console.log("refactored :", tx + "/" + ty, "in", taillex + "/" + tailley + " (multiple de this.tailleChunks)")
 
+        this.staticCamera = false;
 
         this.taillex = taillex;
         this.tailley = tailley;
@@ -24,7 +26,13 @@ export default class Monde {
         this.allCases = [] //[][]
         this.casesDisplays = []
 
+
         this.pileChunkRender = [];
+
+        let timer = new Timer()
+        let allTimer = new Timer()
+        timer.Pin()
+        allTimer.Pin()
 
         this.entityTypes = {
             "Player": Player
@@ -38,12 +46,15 @@ export default class Monde {
                 col.push(new Chunk(this, this.displayGroup, x, y, tailleChunks))
             }
             this.allChunks.push(col)
-
         }
 
+        console.log("Init chunks : "+timer.PinString())
+
         //INIT ALL CASES
+        let nombreCases = taillex * tailley
         for (let x = 0; x < taillex; x++) {
             let temp = []
+            console.log(Math.round((x * tailley / nombreCases) * 100) + "%")
             for (let y = 0; y < tailley; y++) {
                 let caseIci = new Case(this, two, this.displayGroup)
                 temp.push(caseIci)
@@ -60,6 +71,8 @@ export default class Monde {
             }
             this.allCases.push(temp)
         }
+        console.log("Cases générées !! "+timer.PinString())
+
 
         //INIT TEST ENTITY
         for (let i = 0; i < 10; i++) {
@@ -68,11 +81,14 @@ export default class Monde {
                 Math.round(Math.random() * (tailley - 1)),
             ))
         }
+        console.log("Test entities créées !! "+timer.PinString())
+
 
         //INIT PLAYER
         this.player = new this.entityTypes["Player"](two, this.alwaysOnTopGroup, this, 5, 5)
 
         this.SetupAllChunks();
+        console.log("Chunks setup !! "+timer.PinString())
 
         //DEBUG
         this.renderChunks = true
@@ -83,6 +99,7 @@ export default class Monde {
                         tailleCase * tailleChunks, tailleCase * tailleChunks)
                     rect.fill = "transparent"
                     rect.stroke = "red"
+                    this.alwaysOnTopGroup.add(rect)
                 }
             }
         }
@@ -92,6 +109,8 @@ export default class Monde {
                 this.allChunks[x][y].Render()
             }
         }
+        console.log("Chunks prérender !! "+timer.PinString())
+
 
         //UNLOAD ALL CHUNKS
         for (let x = 0; x < taillex / tailleChunks; x++) {
@@ -99,10 +118,13 @@ export default class Monde {
                 this.allChunks[x][y].UnloadDisplays()
             }
         }
+        console.log("Chunks unload !! "+timer.PinString())
+
 
         this.UpdateRenderDistance(this.player.posChunk, { x: 0, y: 0 })
 
         console.log(this.allChunks)
+        allTimer.Pin("ALL TIME")
         console.log("FIN CONSTRUCTEUR MONDE")
     }
 
@@ -120,10 +142,24 @@ export default class Monde {
 
         this.player.Render();
 
+        if (!this.staticCamera) {
+            this.displayGroup.position.set(
+                -this.player.display.position.x + window.innerWidth / 2,
+                -this.player.display.position.y + window.innerHeight / 2
+            )
+
+            this.alwaysOnTopGroup.position.set(
+                -this.player.display.position.x + window.innerWidth / 2,
+                -this.player.display.position.y + window.innerHeight / 2
+            )
+        }
     }
 
     Input(key, state) {
         this.player.Input(key, state)
+        if (key == "c" && state == true) {
+            this.staticCamera = !this.staticCamera
+        }
     }
 
     SetupAllChunks() {

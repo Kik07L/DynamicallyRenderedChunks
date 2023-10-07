@@ -1,5 +1,9 @@
-import Monde from "./Monde/Monde.js"
+import Monde from "./Monde/Monde.js";
 import Millis from "./Millis.js"
+
+export function lerp(start, end, amt) {
+    return (1 - amt) * start + amt * end
+}
 
 var params = {
     fullscreen: true
@@ -34,7 +38,7 @@ window.addEventListener('keyup', function (event) {
 var elem = document.body;
 var two = new Two(params).appendTo(elem);
 
-export var mondeActif = new Monde(two, 30, 30, 50, 6);
+export var mondeActif = new Monde(two, 50, 50, 30, 6);
 
 var coucou = two.makeCircle(50, 50, 10)
 coucou.fill = "black"
@@ -45,7 +49,7 @@ two.play();
 
 function update(frameCount) {
     Millis.Update();
-    
+
     coucou.position.set(mousePos.x, mousePos.y)
 
     mondeActif.Update()

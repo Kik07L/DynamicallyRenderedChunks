@@ -1,5 +1,6 @@
 import Millis from "../Millis.js"
 import Entity from "./Entity.js"
+import { lerp } from "../main.js"
 
 export default class Player extends Entity {
 
@@ -23,7 +24,6 @@ export default class Player extends Entity {
             'right': { x: 1, y: 0, state: false }
         }
 
-        this.posChunk = { x: undefined, y: undefined }
         this.UpdatePosChunk()
 
     }
@@ -39,6 +39,14 @@ export default class Player extends Entity {
             }
         })
     }
+
+    Render() {
+        this.display.position.set(
+            lerp(this.display.position.x, this.pos.x * this.monde.tailleCase + this.monde.tailleCase / 2, 0.3),
+            lerp(this.display.position.y, this.pos.y * this.monde.tailleCase + this.monde.tailleCase / 2, 0.3),
+        )
+    }
+
 
 
     Input(key, state) {
@@ -61,10 +69,5 @@ export default class Player extends Entity {
         return false
     }
 
-    UpdatePosChunk() {
-        this.posChunk = {
-            x: Math.floor(this.pos.x / this.monde.tailleChunks),
-            y: Math.floor(this.pos.y / this.monde.tailleChunks)
-        }
-    }
+    
 }
