@@ -3,6 +3,7 @@ import Entity from "../Entity/Entity.js";
 import Player from "../Entity/Player.js";
 import Chunk from "./Chunk.js";
 import { Timer } from "../Millis.js"
+import { perlin } from "../Libraries/Perlin.js"
 
 export default class Monde {
     constructor(two, taillex, tailley, tailleCase, tailleChunks) {
@@ -40,7 +41,7 @@ export default class Monde {
             "Player": Player
         }
 
-        //INIT ALL CHUNKS
+        //INIT ALL CHUNKS OPTI
         this.allChunks = []
         for (let x = 0; x < taillex / tailleChunks; x++) {
             let col = []
@@ -58,7 +59,7 @@ export default class Monde {
             let temp = []
             console.log(Math.round((x * tailley / nombreCases) * 100) + "%")
             for (let y = 0; y < tailley; y++) {
-                let caseIci = new Case(this, two, this.displayGroup)
+                let caseIci = new Case(this, two, this.displayGroup, { x: x, y: y })
                 temp.push(caseIci)
 
                 let chunkPos = {
@@ -67,8 +68,7 @@ export default class Monde {
                 }
 
                 //Mise dans le chunk correspondant
-                this.allChunks
-                [chunkPos.x][chunkPos.y].AddCase(caseIci, x, y)
+                this.allChunks[chunkPos.x][chunkPos.y].AddCase(caseIci, x, y)
             }
             this.allCases.push(temp)
         }
@@ -88,8 +88,8 @@ export default class Monde {
         //INIT PLAYER
         this.player = new this.entityTypes["Player"](two, this.alwaysOnTopGroup, this, 5, 5)
 
-        this.SetupAllChunks();
-        console.log("Chunks setup !! " + timer.PinString())
+        this.SetupEntitiesInChunks();
+        console.log("Chunks entities setup !! " + timer.PinString())
 
         //DEBUG
         this.renderChunks = true
@@ -105,13 +105,14 @@ export default class Monde {
             }
         }
 
+        /*
         for (let x = 0; x < taillex / tailleChunks; x++) {
             for (let y = 0; y < tailley / tailleChunks; y++) {
                 this.allChunks[x][y].Render()
             }
         }
         console.log("Chunks prérender !! " + timer.PinString())
-
+        */
 
         //UNLOAD ALL CHUNKS
         for (let x = 0; x < taillex / tailleChunks; x++) {
@@ -124,7 +125,7 @@ export default class Monde {
 
         this.UpdateRenderDistance(this.player.posChunk, { x: 0, y: 0 })
 
-        console.log(this.allChunks)
+        //console.log(this.allChunks)
         allTimer.Pin("ALL TIME")
         console.log("FIN CONSTRUCTEUR MONDE")
     }
@@ -179,7 +180,7 @@ export default class Monde {
         }
     }
 
-    SetupAllChunks() {
+    SetupEntitiesInChunks() {
         this.allEntities.forEach(entity => {
             let pos = {
                 x: Math.floor(entity.pos.x / this.tailleChunks),
@@ -204,6 +205,7 @@ export default class Monde {
 
                     if (chunk.load) {
                         chunk.chunk.LoadDisplays()
+                        chunk.chunk.Render()
                     }
                     else {
                         chunk.chunk.UnloadDisplays()

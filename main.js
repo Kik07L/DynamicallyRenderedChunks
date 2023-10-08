@@ -16,11 +16,6 @@ var mousePos = {
     y: 0
 }
 
-class A {
-    constructor(x) {
-        this.x = x
-    }
-}
 
 window.addEventListener("mousemove", (e) => {
     mousePos.x = e.clientX;
@@ -38,7 +33,7 @@ window.addEventListener('keyup', function (event) {
 var elem = document.body;
 var two = new Two(params).appendTo(elem);
 
-export var mondeActif = new Monde(two, 50, 50, 30, 3);
+export var mondeActif = new Monde(two, 50, 50, 40, 6);
 
 var coucou = two.makeCircle(50, 50, 10)
 coucou.fill = "black"
