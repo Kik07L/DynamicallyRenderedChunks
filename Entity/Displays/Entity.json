@@ -1,0 +1,11 @@
+{
+    "name": "Entity",
+    "fill": "blue",
+    "stroke": "black",
+    "stroke-width": 2,
+    "stroke-opacity": 1,
+    "fill-opacity": 1,
+    "type": "rectangle",
+    "width": 0.8,
+    "height": 0.8
+}

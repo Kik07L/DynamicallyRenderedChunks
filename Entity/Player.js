@@ -7,7 +7,7 @@ export default class Player extends Entity {
     constructor(two, displayGroup, monde, posx, posy) {
         super(two, displayGroup, monde, posx, posy)
 
-        this.renderDistance = 2
+        this.renderDistance = 1
         this.display.fill = "red"
 
         this.inputToDir = {

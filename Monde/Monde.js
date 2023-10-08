@@ -1,7 +1,11 @@
-import Case from "./Case.js";
+
 import Entity from "../Entity/Entity.js";
+import Mouton from "../Entity/Mouton.js";
 import Player from "../Entity/Player.js";
+
+import Case from "./Case.js";
 import Chunk from "./Chunk.js";
+
 import { Timer } from "../Millis.js"
 
 export default class Monde {
@@ -37,7 +41,8 @@ export default class Monde {
         allTimer.Pin()
 
         this.entityTypes = {
-            "Player": Player
+            "Player": Player,
+            "Mouton": Mouton
         }
 
         //INIT ALL CHUNKS OPTI
@@ -76,7 +81,7 @@ export default class Monde {
 
         //INIT TEST ENTITY
         for (let i = 0; i < 100; i++) {
-            this.allEntities.push(new Entity(two, this.alwaysOnTopGroup, this,
+            this.allEntities.push(new this.entityTypes["Mouton"](two, this.alwaysOnTopGroup, this,
                 Math.round(Math.random() * (taillex - 1)),
                 Math.round(Math.random() * (tailley - 1)),
             ))

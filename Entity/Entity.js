@@ -1,4 +1,5 @@
 import Millis from "../Millis.js"
+import displayData from "./Displays/Entity.json" assert { type: "json" }
 
 export default class Entity {
     constructor(two, displayGroup, monde, posx, posy) {
@@ -11,8 +12,8 @@ export default class Entity {
 
         this.monde = monde
 
-        this.display = two.makeRectangle(0, 0, monde.tailleCase - 10, monde.tailleCase - 10)
-        this.display.fill = "blue"
+        this.display = two.makeRectangle(0, 0, monde.tailleCase, monde.tailleCase)
+        this.setDisplay(displayData)
 
         this.displayGroup = displayGroup
         this.displayGroup.add(this.display)
@@ -25,7 +26,10 @@ export default class Entity {
     }
 
     Update() {
-
+        if (Millis.millis() == this.deplTimer || Millis.millis() - this.deplTimer > this.deplCooldown) {
+            this.deplTimer = Millis.millis()
+            this.Deplacement(1, 0)
+        }
     }
 
     Render() {
@@ -33,6 +37,13 @@ export default class Entity {
             this.pos.x * this.monde.tailleCase + this.monde.tailleCase / 2,
             this.pos.y * this.monde.tailleCase + this.monde.tailleCase / 2
         )
+    }
+
+    setDisplay(jsonFile) {
+        this.display.fill = jsonFile.fill
+        this.display.stroke = jsonFile.stroke
+        this.display.width = this.display.width * jsonFile.width
+        this.display.height = this.display.height * jsonFile.height
     }
 
     Deplacement(x = 0, y = 0) {
@@ -49,8 +60,25 @@ export default class Entity {
             }
         }
 
+        const ancienPosChunk = this.GetPosChunk()
+
         this.pos.x += x;
         this.pos.y += y;
+
+        const nouveauPosChunk = this.GetPosChunk()
+
+        if (ancienPosChunk.x != nouveauPosChunk.x || ancienPosChunk.y != nouveauPosChunk.y) {
+            let ancienChunk = this.monde.allChunks[ancienPosChunk.x][ancienPosChunk.y]
+            let nouveauChunk = this.monde.allChunks[nouveauPosChunk.x][nouveauPosChunk.y]
+            for (let i in ancienChunk.entities) {
+                if (ancienChunk.entities[i] == this) {
+                    ancienChunk.entities.splice(i, 1)
+                    break
+                }
+            }
+            nouveauChunk.entities.push(this)
+        }
+
         return true
 
     }
@@ -111,7 +139,11 @@ export default class Entity {
     }
 
     UpdatePosChunk() {
-        this.posChunk = {
+        this.posChunk = this.GetPosChunk()
+    }
+
+    GetPosChunk() {
+        return {
             x: Math.floor(this.pos.x / this.monde.tailleChunks),
             y: Math.floor(this.pos.y / this.monde.tailleChunks)
         }
