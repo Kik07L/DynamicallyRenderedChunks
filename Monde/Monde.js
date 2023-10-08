@@ -3,7 +3,6 @@ import Entity from "../Entity/Entity.js";
 import Player from "../Entity/Player.js";
 import Chunk from "./Chunk.js";
 import { Timer } from "../Millis.js"
-import { perlin } from "../Libraries/Perlin.js"
 
 export default class Monde {
     constructor(two, taillex, tailley, tailleCase, tailleChunks) {
@@ -76,7 +75,7 @@ export default class Monde {
 
 
         //INIT TEST ENTITY
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 100; i++) {
             this.allEntities.push(new Entity(two, this.alwaysOnTopGroup, this,
                 Math.round(Math.random() * (taillex - 1)),
                 Math.round(Math.random() * (tailley - 1)),
