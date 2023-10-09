@@ -32,8 +32,7 @@ export default class Player extends Entity {
         Object.keys(this.dirToDepl).forEach(key => {
             const value = this.dirToDepl[key]
             if (value.state) {
-                if (Millis.millis() == this.deplTimer || Millis.millis() - this.deplTimer > this.deplCooldown) {
-                    this.deplTimer = Millis.millis()
+                if (this.IsDeplCooldownFinished()) {
                     this.Deplacement(value.x, value.y)
                 }
             }
@@ -59,7 +58,8 @@ export default class Player extends Entity {
             const tempPosChunk = { ...this.posChunk }
             this.UpdatePosChunk()
 
-
+            //  Update la distance de rendu que si on a changé de chunk 
+            //  et si la camera n'est pas statique
             if (!this.monde.staticCamera) {
                 if (tempPosChunk.x != this.posChunk.x || tempPosChunk.y != this.posChunk.y) {
                     this.monde.UpdateRenderDistance(this.posChunk, { x: this.posChunk.x - tempPosChunk.x, y: this.posChunk.y - tempPosChunk.y })

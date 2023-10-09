@@ -31,7 +31,8 @@ export default class Monde {
 
         this.allEntities = []
         this.allCases = [] //[][]
-
+        this.oneLineAllChunks = []
+        this.allChunks = []
 
         this.pileChunkRender = [];
 
@@ -46,7 +47,6 @@ export default class Monde {
         }
 
         //INIT ALL CHUNKS OPTI
-        this.allChunks = []
         for (let x = 0; x < taillex / tailleChunks; x++) {
             let col = []
             for (let y = 0; y < tailley / tailleChunks; y++) {
@@ -80,7 +80,7 @@ export default class Monde {
 
 
         //INIT TEST ENTITY
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 5; i++) {
             this.allEntities.push(new this.entityTypes["Mouton"](two, this.alwaysOnTopGroup, this,
                 Math.round(Math.random() * (taillex - 1)),
                 Math.round(Math.random() * (tailley - 1)),
@@ -107,6 +107,7 @@ export default class Monde {
                     this.alwaysOnTopGroup.add(rect)
                 }
             }
+            console.log("Chunks debug render !! " + timer.PinString())
         }
 
         /*
@@ -118,6 +119,7 @@ export default class Monde {
         console.log("Chunks prérender !! " + timer.PinString())
         */
 
+        /*
         //UNLOAD ALL CHUNKS
         for (let x = 0; x < taillex / tailleChunks; x++) {
             for (let y = 0; y < tailley / tailleChunks; y++) {
@@ -125,7 +127,13 @@ export default class Monde {
             }
         }
         console.log("Chunks unload !! " + timer.PinString())
+        */
 
+        for (let x = 0; x < taillex / tailleChunks; x++) {
+            for (let y = 0; y < tailley / tailleChunks; y++) {
+                this.oneLineAllChunks.push(this.allChunks[x][y])
+            }
+        }
 
         this.UpdateRenderDistance(this.player.posChunk, { x: 0, y: 0 })
 
@@ -176,7 +184,7 @@ export default class Monde {
                 }
 
                 if (depl.x > 1 || depl.x < -1 || depl.y > 1 || depl.y < -1) {
-                    this.player.setPos(this.staticCameraPos.x, this.staticCameraPos.y)
+                    this.player.SetPos(this.staticCameraPos.x, this.staticCameraPos.y)
                 } else {
                     this.UpdateRenderDistance(this.player.posChunk, depl)
                 }

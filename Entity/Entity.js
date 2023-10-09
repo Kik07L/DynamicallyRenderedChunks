@@ -26,8 +26,8 @@ export default class Entity {
     }
 
     Update() {
-        if (Millis.millis() == this.deplTimer || Millis.millis() - this.deplTimer > this.deplCooldown) {
-            this.deplTimer = Millis.millis()
+        if (this.IsDeplCooldownFinished()) {
+            console.log(this.pos, "Update")
             this.Deplacement(1, 0)
         }
     }
@@ -44,6 +44,14 @@ export default class Entity {
         this.display.stroke = jsonFile.stroke
         this.display.width = this.display.width * jsonFile.width
         this.display.height = this.display.height * jsonFile.height
+    }
+
+    IsDeplCooldownFinished() {
+        if (Millis.millis() == this.deplTimer || Millis.millis() - this.deplTimer > this.deplCooldown) {
+            this.deplTimer = Millis.millis()
+            return true
+        }
+        return false
     }
 
     Deplacement(x = 0, y = 0) {
@@ -73,6 +81,7 @@ export default class Entity {
             for (let i in ancienChunk.entities) {
                 if (ancienChunk.entities[i] == this) {
                     ancienChunk.entities.splice(i, 1)
+                    console.log(this, [ancienChunk.x, ancienChunk.y] ,[nouveauChunk.x, nouveauChunk.y] )
                     break
                 }
             }
@@ -157,7 +166,7 @@ export default class Entity {
         this.displayGroup.add(this.display)
     }
 
-    setPos(x, y) {
+    SetPos(x, y) {
         this.pos.x = x;
         this.pos.y = y;
         this.UpdatePosChunk()
