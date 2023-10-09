@@ -2,6 +2,7 @@
 import Entity from "../Entity/Entity.js";
 import Mouton from "../Entity/Mouton.js";
 import Player from "../Entity/Player.js";
+import Block from "../Entity/Blocks/Block.js";
 
 import Case from "./Case.js";
 import Chunk from "./Chunk.js";
@@ -29,6 +30,8 @@ export default class Monde {
         this.displayGroup = two.makeGroup()
         this.alwaysOnTopGroup = two.makeGroup()
 
+        this.two = two
+
         this.allEntities = []
         this.allCases = [] //[][]
         this.oneLineAllChunks = []
@@ -43,7 +46,8 @@ export default class Monde {
 
         this.entityTypes = {
             "Player": Player,
-            "Mouton": Mouton
+            "Mouton": Mouton,
+            "Block": Block,
         }
 
         //INIT ALL CHUNKS OPTI
@@ -308,5 +312,22 @@ export default class Monde {
 
         return chunks
         //{chunk:chunk, load:bool}
+    }
+
+    PlaceBlock(x, y) {
+        let posChunk = {
+            x: Math.floor(x / this.tailleChunks),
+            y: Math.floor(y / this.tailleChunks)
+        }
+
+        let block = new this.entityTypes["Block"](this.two, this.alwaysOnTopGroup, this, x, y)
+
+
+        this.allChunks[posChunk.x][posChunk.y]
+            .entities
+            .push(block)
+
+
+        this.allEntities.push(block)
     }
 }

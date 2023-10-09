@@ -24,6 +24,8 @@ export default class Player extends Entity {
             'right': { x: 1, y: 0, state: false }
         }
 
+        this.dirRegard = { x: 1, y: 0 }
+
         this.UpdatePosChunk()
 
     }
@@ -32,6 +34,7 @@ export default class Player extends Entity {
         Object.keys(this.dirToDepl).forEach(key => {
             const value = this.dirToDepl[key]
             if (value.state) {
+                this.dirRegard = value
                 if (this.IsDeplCooldownFinished()) {
                     this.Deplacement(value.x, value.y)
                 }
@@ -46,11 +49,13 @@ export default class Player extends Entity {
         )
     }
 
-
-
     Input(key, state) {
         if (key in this.inputToDir)
             this.dirToDepl[this.inputToDir[key]].state = state;
+
+        if (key == 'f' && state) {
+            this.monde.PlaceBlock(this.dirRegard.x + this.pos.x, this.dirRegard.y + this.pos.y)
+        }
     }
 
     Deplacement(x = 0, y = 0) {

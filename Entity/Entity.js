@@ -18,7 +18,7 @@ export default class Entity {
         this.displayGroup = displayGroup
         this.displayGroup.add(this.display)
 
-        this.deplCooldown = 50
+        this.deplCooldown = 100
         this.deplTimer = 0
 
         this.posChunk = { x: undefined, y: undefined }
@@ -27,8 +27,8 @@ export default class Entity {
 
     Update() {
         if (this.IsDeplCooldownFinished()) {
-            console.log(this.pos, "Update")
-            this.Deplacement(1, 0)
+            //console.log(this.pos, "Update")
+            //this.Deplacement(1, 0)
         }
     }
 
@@ -81,7 +81,7 @@ export default class Entity {
             for (let i in ancienChunk.entities) {
                 if (ancienChunk.entities[i] == this) {
                     ancienChunk.entities.splice(i, 1)
-                    console.log(this, [ancienChunk.x, ancienChunk.y] ,[nouveauChunk.x, nouveauChunk.y] )
+                    //console.log(this, [ancienChunk.x, ancienChunk.y] ,[nouveauChunk.x, nouveauChunk.y] )
                     break
                 }
             }
