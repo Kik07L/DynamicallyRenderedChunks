@@ -1,11 +1,22 @@
 import Entity from "../Entity.js"
-import displayData from "../Displays/Block.json" assert { type: "json" }
 
 export default class Block extends Entity{
     constructor(two, displayGroup, monde, posx, posy) {
         super(two, displayGroup, monde, posx, posy)
+        this.loadDisplayData()
 
-        this.setDisplay(displayData)
+    }
+    
+    async loadDisplayData() {
+        try {
+            const response = await fetch("public/Displays/Block.json");
+            if (!response.ok) {
+                throw new Error("Erreur lors du chargement du fichier JSON");
+            }
+            const displayData = await response.json();
+            this.setDisplay(displayData);
+        } catch (error) {
+        }
     }
 
     Render() {

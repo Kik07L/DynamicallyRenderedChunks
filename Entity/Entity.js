@@ -1,5 +1,4 @@
 import Millis from "../Millis.js"
-import displayData from "./Displays/Entity.json" assert { type: "json" }
 
 export default class Entity {
     constructor(two, displayGroup, monde, posx, posy) {
@@ -13,7 +12,7 @@ export default class Entity {
         this.monde = monde
 
         this.display = two.makeRectangle(0, 0, monde.tailleCase, monde.tailleCase)
-        this.setDisplay(displayData)
+        this.loadDisplayData()
 
         this.displayGroup = displayGroup
         this.displayGroup.add(this.display)
@@ -23,6 +22,18 @@ export default class Entity {
 
         this.posChunk = { x: undefined, y: undefined }
         this.UpdatePosChunk()
+    }
+
+    async loadDisplayData() {
+        try {
+            const response = await fetch("public/Displays/Entity.json");
+            if (!response.ok) {
+                throw new Error("Erreur lors du chargement du fichier JSON");
+            }
+            const displayData = await response.json();
+            this.setDisplay(displayData);
+        } catch (error) {
+        }
     }
 
     Update() {
